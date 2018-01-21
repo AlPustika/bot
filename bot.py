@@ -1,8 +1,7 @@
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
-import config
+import os
 
-
-upd = Updater(config.api_key)
+upd = Updater(os.environ['TOKEN'])
 
 
 def start(bot, update):
