@@ -1,4 +1,4 @@
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
 import config
 
 
@@ -18,7 +18,7 @@ def echo(bot, update):
 
 upd.dispatcher.add_handler(CommandHandler('start', start))
 upd.dispatcher.add_handler(CommandHandler('help', help))
-upd.dispatcher.add_handler(CommandHandler('echo', echo))
+upd.dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
 upd.start_polling()
 
