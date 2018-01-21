@@ -2,7 +2,7 @@ from telegram.ext import Updater, CommandHandler
 import config
 
 
-upd = Updater(api_key)
+upd = Updater(config.api_key)
 
 
 def start(bot, update):
