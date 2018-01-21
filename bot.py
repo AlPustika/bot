@@ -1,7 +1,8 @@
 from telegram.ext import Updater, CommandHandler
+import config
 
-token = '539369144:AAFPK7WUyI0t0wQPfOKRdlgAmhQRWf_Y4-M'
-upd = Updater(token)
+
+upd = Updater(api_key)
 
 
 def start(bot, update):
@@ -10,9 +11,14 @@ def start(bot, update):
 def help(bot, update):
     update.message.reply_text('please read the help book')
 
+def echo(bot, update):
+    txt = update.message.text
+    update.message.reply_text(txt.capitalize())
+
 
 upd.dispatcher.add_handler(CommandHandler('start', start))
 upd.dispatcher.add_handler(CommandHandler('help', help))
+upd.dispatcher.add_handler(CommandHandler('echo', echo))
 
 upd.start_polling()
 
