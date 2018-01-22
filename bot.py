@@ -21,5 +21,5 @@ upd.dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
 upd.start_polling()
 
-upd.idle()
+#upd.idle()
 
