@@ -4,7 +4,7 @@ import logging
 import os
 import pandas as pd
 
-upd = Updater(os.environ['TOKEN'])
+
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,12 +16,6 @@ def error(bot, update, error):
 
 
 def start(bot, update):
-    cntr=['Country1','Country2','Country3''Country4']
-    #btn = [[InlineKeyboardButton('Country1', callback_data='Country1'),
-    #        InlineKeyboardButton('Country2', callback_data='Country2'),
-    #        InlineKeyboardButton('Country3', callback_data='Country3'),
-    #        InlineKeyboardButton('Country4', callback_data='Country4')]]
-    #btn = [[InlineKeyboardButton('Country' + str(i), callback_data='Country' + str(i)) for i in range(1,5)]]
     #cn = ['England', 'France', 'Spain', 'Belgium', 'Poland', 'Germany', 'Finland', 'Pakistan', 'India', 'Netherlands']
     df = pd.read_csv('studios.csv')
 
@@ -54,18 +48,28 @@ def button(bot, update):
 
 
 def main():
+    tok = os.environ['TOKEN']
+    print(tok)
+    upd = Updater('537858822:AAEA9hqSdMR1e89DRyvglW98Qagb0wN8ROk')
+    print(upd)
     upd.dispatcher.add_handler(CommandHandler('start', start))
     upd.dispatcher.add_handler(CommandHandler('help', help))
     upd.dispatcher.add_handler(MessageHandler(Filters.text, echo))
     upd.dispatcher.add_handler(CallbackQueryHandler(button))
     upd.dispatcher.add_error_handler(error)
     upd.start_polling()
-
+#################  WEBHOOK  ###############
     #upd.idle()
 
+    #TOKEN = "TOKEN"
+    #PORT = int(os.environ.get('PORT', '8443'))
+    #updater = Updater(TOKEN)
+    ## add handlers
+    #updater.start_webhook(listen="0.0.0.0",
+    #                      port=PORT,
+    #                      url_path=TOKEN)
+    #updater.bot.set_webhook("https://<appname>.herokuapp.com/" + TOKEN)
+    #updater.idle()
 
 if __name__== '__main__':
     main()
-
-#l = range(1, 10)
-#print ([l[x:x+10] for #x in range(0, len(l), 1)])
