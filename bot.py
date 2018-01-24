@@ -16,23 +16,30 @@ def error(bot, update, error):
 
 
 def start(bot, update):
-    #cn = ['England', 'France', 'Spain', 'Belgium', 'Poland', 'Germany', 'Finland', 'Pakistan', 'India', 'Netherlands']
-    df = pd.read_csv('studios.csv')
 
-    cn = pd.unique(df.Country)
-
-    btn = [[InlineKeyboardButton(cn[i], callback_data=cn[i]),
-           InlineKeyboardButton(cn[i + 1], callback_data=cn[i + 1]),
-           InlineKeyboardButton(cn[i + 2], callback_data=cn[i + 2])] for i in range(0, len(cn)-2, 3)]
-
-    print (btn)#
+    btn = country()
     reply_markup = InlineKeyboardMarkup(btn)
-    update.message.reply_text('Command: /buttons', reply_markup= reply_markup)
+    update.message.reply_text('Select country please', reply_markup=reply_markup)
 
 
-def help(bot, update):
-    update.message.reply_text('you have been iop')
 
+def country():
+    size = 3
+    df = pd.read_csv('studios.csv')  # read data
+    all_cntry = pd.unique(df.Country)  # kill country with the same name
+    all_cntry = sorted(all_cntry)  # sorting by alphabet
+    print(all_cntry)
+    rest = len(all_cntry) % size  # how many countes not in list (oatatok)
+    cnt = len(all_cntry) - rest  # length for cyckling
+    ls = [[InlineKeyboardButton(all_cntry[i], callback_data=all_cntry[i]),
+           InlineKeyboardButton(all_cntry[i + 1], callback_data=all_cntry[i + 1]),
+           InlineKeyboardButton(all_cntry[i + 2], callback_data=all_cntry[i + 2])] for i in range(0, cnt, size)]
+    if rest == 1:
+        ls.append([InlineKeyboardButton(all_cntry[-1], callback_data=all_cntry[-1])])#
+    elif rest == 2:
+        ls.append([InlineKeyboardButton(all_cntry[-1], callback_data=all_cntry[-1]),
+                   InlineKeyboardButton(all_cntry[-2], callback_data=all_cntry[-2])])
+    return ls
 
 def echo(bot, update):
     txt = update.message.text
@@ -48,10 +55,11 @@ def button(bot, update):
 
 
 def main():
+
     tok = os.environ['TOKEN']
-    print(tok)
-    upd = Updater('537858822:AAEA9hqSdMR1e89DRyvglW98Qagb0wN8ROk')
-    print(upd)
+    #print(tok)
+    upd = Updater('510826842:AAGLRHUfrT4CgteJ3hzMV7HjykfrMl1EZv0')
+    #print(upd)
     upd.dispatcher.add_handler(CommandHandler('start', start))
     upd.dispatcher.add_handler(CommandHandler('help', help))
     upd.dispatcher.add_handler(MessageHandler(Filters.text, echo))
