@@ -2,8 +2,9 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler, CallbackQueryHandler
 import logging
 import os
+import pandas as pd
 
-upd = Updater(os.environ['TOKEN'])
+
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,20 +16,30 @@ def error(bot, update, error):
 
 
 def start(bot, update):
-    cntr=['Country1','Country2','Country3''Country4']
-    #btn = [[InlineKeyboardButton('Country1', callback_data='Country1'),
-    #        InlineKeyboardButton('Country2', callback_data='Country2'),
-    #        InlineKeyboardButton('Country3', callback_data='Country3'),
-    #        InlineKeyboardButton('Country4', callback_data='Country4')]]
-    btn = [[InlineKeyboardButton('Country' + str(i), callback_data='Country' + str(i)) for i in range(1,4)]]
-    print (btn)#
+
+    btn = country()
     reply_markup = InlineKeyboardMarkup(btn)
-    update.message.reply_text('Command: /buttons', reply_markup= reply_markup)
+    update.message.reply_text('Select country please', reply_markup=reply_markup)
 
 
-def help(bot, update):
-    update.message.reply_text('you have been iop')
 
+def country():
+    size = 3
+    df = pd.read_csv('studios.csv')  # read data
+    all_cntry = pd.unique(df.Country)  # kill country with the same name
+    all_cntry = sorted(all_cntry)  # sorting by alphabet
+    print(all_cntry)
+    rest = len(all_cntry) % size  # how many countes not in list (oatatok)
+    cnt = len(all_cntry) - rest  # length for cyckling
+    ls = [[InlineKeyboardButton(all_cntry[i], callback_data=all_cntry[i]),
+           InlineKeyboardButton(all_cntry[i + 1], callback_data=all_cntry[i + 1]),
+           InlineKeyboardButton(all_cntry[i + 2], callback_data=all_cntry[i + 2])] for i in range(0, cnt, size)]
+    if rest == 1:
+        ls.append([InlineKeyboardButton(all_cntry[-1], callback_data=all_cntry[-1])])#
+    elif rest == 2:
+        ls.append([InlineKeyboardButton(all_cntry[-1], callback_data=all_cntry[-1]),
+                   InlineKeyboardButton(all_cntry[-2], callback_data=all_cntry[-2])])
+    return ls
 
 def echo(bot, update):
     txt = update.message.text
@@ -44,18 +55,29 @@ def button(bot, update):
 
 
 def main():
+
+    tok = os.environ['TOKEN']
+    #print(tok)
+    upd = Updater('510826842:AAGLRHUfrT4CgteJ3hzMV7HjykfrMl1EZv0')
+    #print(upd)
     upd.dispatcher.add_handler(CommandHandler('start', start))
     upd.dispatcher.add_handler(CommandHandler('help', help))
     upd.dispatcher.add_handler(MessageHandler(Filters.text, echo))
     upd.dispatcher.add_handler(CallbackQueryHandler(button))
     upd.dispatcher.add_error_handler(error)
     upd.start_polling()
-
+#################  WEBHOOK  ###############
     #upd.idle()
 
+    #TOKEN = "TOKEN"
+    #PORT = int(os.environ.get('PORT', '8443'))
+    #updater = Updater(TOKEN)
+    ## add handlers
+    #updater.start_webhook(listen="0.0.0.0",
+    #                      port=PORT,
+    #                      url_path=TOKEN)
+    #updater.bot.set_webhook("https://<appname>.herokuapp.com/" + TOKEN)
+    #updater.idle()
 
 if __name__== '__main__':
     main()
-
-#l = range(1, 10)
-#print ([l[x:x+10] for #x in range(0, len(l), 1)])
